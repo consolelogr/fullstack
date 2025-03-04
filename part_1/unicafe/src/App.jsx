@@ -1,13 +1,31 @@
 import { useState } from 'react'
 import './App.css'
 
+
+const Statistics = ({good, neutral, bad}) => {
+  const average = (good - bad) / (good + neutral + bad);
+  const positive = Math.min(100, good * 100 / (good + neutral + bad));
+
+
+return(
+<div>
+  <h2>Statistics</h2>
+  <p>Good: {good} <br/> Neutral: {neutral} <br/> Bad: {bad}</p>
+
+  <p>Average: {isNaN(average) ? '0.0' : average.toFixed(1)}</p>
+  <p>Positive: {isNaN(positive) ? '0.0' : positive.toFixed(1)+ "%"}</p>
+
+    <p>Total: {good + neutral + bad}</p>
+    </div>
+)
+
+} 
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const average = (good - bad) / (good + neutral + bad);
-  const positive =  100* (good) / (neutral + bad);
  
 
     return (
@@ -25,13 +43,7 @@ const App = () => {
         { const badCount=bad+1 ;setBad(badCount);  }}> Bad </button>
         
         <br/><br/>
-        <h2>Statistics</h2>
-      <p>Good: {good} <br/> Neutral: {neutral} <br/> Bad: {bad}</p>
-
-      <p>Average: {isNaN(average) ? '0.0' : average.toFixed(1)}</p>
-      <p>Positive: {isNaN(positive) ? '0.0' : positive.toFixed(1)+ "%"}</p>
-  
-        <p>Total: {good + neutral + bad}</p>
+       {Statistics({good, neutral, bad})}
 
      
       </div>
