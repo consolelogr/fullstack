@@ -11,14 +11,42 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
-  const [selected, setSelected] = useState(0)
-   return (
+  const [votes, setVotes] = useState([0, 0, 0, 0, 0, 0, 0, 0]);
+  const [selected, setSelected] = useState(0);
+
+  const handleVote = () => {
+    setVotes(prevVotes => [...prevVotes.slice(0, selected), prevVotes[selected] + 1, ...prevVotes.slice(selected + 1)])
+  }
+
+  return (
     <div>
-      {anecdotes[selected]}
-      <br/>
-      <button onClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))}>
-  Next anecdote </button>
+      <span style={{ fontSize: '1.5em', fontWeight: '700' }}>{selected}: </span> {anecdotes[selected]}
+      <br></br><span>&#40;{votes[selected]} votes  &#41;</span><br /><br />
+
+      <button onClick={
+        () => setSelected(Math.floor(Math.random() * anecdotes.length))}>
+        Next anecdote </button>
+
+      <button onClick={handleVote}>
+        Vote </button>
+
+      <br /><br />
+
+      Most votes:
+      {!Math.max(...votes) ? (
+        <p>No votes yet</p>
+      ) : (
+        <p>{anecdotes[votes.indexOf(Math.max(...votes))]}</p>
+      )}
+
+      <p>All votes:&#32;
+        {votes.map((count, index) => (
+          <span key={index}>
+            <br />
+            {index}:{count} &#32;
+          </span>
+        ))}
+      </p>
     </div>
   )
 }
