@@ -1,36 +1,82 @@
 
-const App = () => {
-  const course = {
-    id: 1,
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10,
-        id: 1
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7,
-        id: 2
-      },
-      {
-        name: 'State of a component',
-        exercises: 14,
-        id: 3
-      }
-    ]
-  }
+const Course = ({ courses }) => {
   return (
     <div>
-      {/* Access the course object properties */}
-      <p>{course.name}</p>  
-      <p>{course.parts[0].name}: {course.parts[0].exercises} </p> 
-      <p>{course.parts[1].name}: {course.parts[1].exercises} </p>
-      <p>{course.parts[2].name}: {course.parts[2].exercises} </p>
-      <p>Total exercises:</p>
-    </div> 
-  )// Return the JSX code
+      {courses.map(course => (
+        <div key={course.id}>
+          <h2>{course.name}</h2>
+          {course.parts.map(part => (
+            <p key={part.id}>
+              {part.name}: {part.exercises} exercises
+            </p>
+          ))}
+
+        </div>
+      ))}
+
+      <p><br />
+        Total exercises: {courses.reduce((sum, course) =>
+          sum + course.parts.reduce((sum, part) => sum + part.exercises, 0), 0)}
+        {/*  Calculate the total number of exercises */}
+      </p>    
+      </div>
+  )
+}
+
+const App = () => {
+    
+  const courses = [ // Define the courses array
+    {
+      name: 'Half Stack application development',
+      id: 1,
+      parts: [
+        {
+          name: 'Fundamentals of React',
+          exercises: 10,
+          id: 1
+        },
+        {
+          name: 'Using props to pass data',
+          exercises: 7,
+          id: 2
+        },
+        {
+          name: 'State of a component',
+          exercises: 14,
+          id: 3
+        },
+        {
+          name: 'Redux',
+          exercises: 11,
+          id: 4
+        }
+      ]
+    },
+    {
+      name: 'Node.js',
+      id: 2,
+      parts: [
+        {
+          name: 'Routing',
+          exercises: 3,
+          id: 1
+        },
+        {
+          name: 'Middlewares',
+          exercises: 7,
+          id: 2
+        }
+      ]
+    }
+  ]
+
+  return ( // Return the Course component
+    <div>
+
+      <Course courses={courses} />
+    </div>
+  )
 }
 
 export default App      // Export the App component
+
