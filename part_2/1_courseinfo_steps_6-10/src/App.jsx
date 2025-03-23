@@ -1,30 +1,7 @@
 
-const Course = ({ courses }) => {
-  return (
-    <div>
-      {courses.map(course => (
-        <div key={course.id}>
-          <h2>{course.name}</h2>
-          {course.parts.map(part => (
-            <p key={part.id}>
-              {part.name}: {part.exercises} exercises
-            </p>
-          ))}
-
-        </div>
-      ))}
-
-      <p><br />
-        Total exercises: {courses.reduce((sum, course) =>
-          sum + course.parts.reduce((sum, part) => sum + part.exercises, 0), 0)}
-        {/*  Calculate the total number of exercises */}
-      </p>    
-      </div>
-  )
-}
+import Course from './Course' // Import the Course component
 
 const App = () => {
-    
   const courses = [ // Define the courses array
     {
       name: 'Half Stack application development',
@@ -68,7 +45,8 @@ const App = () => {
         }
       ]
     }
-  ]
+  ]    
+
 
   return ( // Return the Course component
     <div>
@@ -76,6 +54,8 @@ const App = () => {
       <Course courses={courses} />
     </div>
   )
+
+  
 }
 
 export default App      // Export the App component
