@@ -3,7 +3,6 @@ const Persons = ({ persons, search, handleDelete }) => {
   const filteredPersons = (Array.isArray(persons) ? persons : []).filter((person) => (
     person?.name?.toLowerCase().includes(search.toLowerCase()) ?? false
   ));
-
   return (
     <div>
       <ul>

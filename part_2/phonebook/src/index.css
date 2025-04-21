@@ -10,6 +10,7 @@ margin:0; padding:0}
 h2:first-child::first-letter{font-size:3rem;}
 li{text-decoration: none;padding:4px;margin-left:1rem}
 ul{padding:0;margin:0}
+
 .page2 button{background:#aaf}
 .page1 button{background:limegreen;padding:2px 20px 2px  20px }
 .page1 button:hover{box-shadow: 0 0 0 2px #fff}

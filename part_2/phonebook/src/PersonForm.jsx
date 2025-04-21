@@ -6,7 +6,6 @@ const PersonForm = ({ handleNameChange, handlePhoneChange, newName, newPhone, ha
                 value={newName}
                 onChange={handleNameChange}
             />
-
             <input
                 placeholder="New phone number"
                 value={newPhone}
