@@ -1,41 +1,26 @@
-
-const Persons = ({ persons, search }) => {
-  const filteredPersons = persons.filter(person =>
-    person.name.toLowerCase().includes(search.toLowerCase())
-  );
-
+const Persons = ({ persons, search, handleDelete }) => {
+  // Check if persons is an array and not null/undefined
+  const filteredPersons = (Array.isArray(persons) ? persons : []).filter((person) => (
+    person?.name?.toLowerCase().includes(search.toLowerCase()) ?? false
+  ));
 
   return (
     <div>
       <ul>
-      {filteredPersons.length > 0 ? (
+        {filteredPersons.length > 0 ? (
           filteredPersons.map((person) => (
             <li key={person.id}>
               {person.name} {person.number}
+              &nbsp;&nbsp;
+              <button onClick={() => handleDelete(person.id)}>delete</button>
             </li>
           ))
         ) : (
           <p>No matches found</p>
         )}
-          
       </ul>
-
-
     </div>
-        
-  )
+  );
 }
-export default Persons;
 
-/*      {search === '' ? (   //ternary operator: condition ? doThisIfTrue : doThisIfFalse
-        <p>None</p>
-      ) : (
-        filteredPersons.length > 0 ? ( //.lenght array property
-          filteredPersons.map((person, index) => ( //creates a new array by applying a function to each element of the original array.
-            <li key={index}>{person.name}</li>
-          ))
-        ) : (
-          <p>No matches found</p>
-        )
-      )}
-*/
+export default Persons;

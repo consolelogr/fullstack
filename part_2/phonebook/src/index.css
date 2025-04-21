@@ -8,12 +8,14 @@ color:#eee;
 margin:0; padding:0}
 
 h2:first-child::first-letter{font-size:3rem;}
-li{text-decoration: none;list-style: none;padding:0;margin:0}
+li{text-decoration: none;padding:4px;margin-left:1rem}
 ul{padding:0;margin:0}
+.page2 button{background:#aaf}
+.page1 button{background:limegreen;padding:2px 20px 2px  20px }
+.page1 button:hover{box-shadow: 0 0 0 2px #fff}
+.page2 button:hover{box-shadow: 0 0 0 2px red  }
 
 
+.page1{background:#1e1e1e;margin-left:1rem;padding:1px 20px  20px 20px; margin-top:1rem; width:300px;text-align:left;  box-shadow:0px 0px 0 2px #777;float:left;min-height:500px;max-width:300px}
 
-
-.page1{background:#1e1e1e;margin-left:5rem;padding:1px 20px  20px 20px; margin-top:2rem; width:300px;text-align:left;  box-shadow:0px 0px 0 2px #777;overflow:scroll;float:left;min-height:500px}
-
-.page2{float:left;background:#1e1e1e;margin-left:0;padding:1px 20px  20px 20px; margin-top:2rem; width:300px;text-align:left;  box-shadow:0px 0px 0 2px #777;overflow:scroll;float:left;min-height:500px;border-left:groove 10px #777 }
+.page2{float:left;background:#1e1e1e;margin-left:0;padding:1px 20px  20px 20px; margin-top:1rem; width:300px;text-align:left;  box-shadow:0px 0px 0 2px #777;float:left;min-height:500px;border-left:groove 10px #777 }

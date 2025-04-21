@@ -13,4 +13,3 @@ const Filter = ({ search, handleSearchChange }) => {
 export default Filter;
 
 
- 
