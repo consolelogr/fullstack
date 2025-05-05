@@ -1,25 +1,43 @@
 const express = require('express')
 const app = express()
-const cors = require('cors')
 
-
-
-let persons = [
-  {
-      "id": 1,
-      "name": "John Doe",
-      "email": "john@example.com"
+let persons =[
+  { 
+    "id": "1",
+    "name": "Arto Hellas", 
+    "number": "040-123456"
+  },
+  { 
+    "id": "2",
+    "name": "Ada Lovelace", 
+    "number": "39-44-5323523"
+  },
+  { 
+    "id": "3",
+    "name": "Dan Abramov", 
+    "number": "12-43-234345"
+  },
+  { 
+    "id": "4",
+    "name": "Mary Poppendieck", 
+    "number": "39-23-6423122"
   }
-];
+]
 
+const kello = new Date()
 
 app.use(express.json())
 
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'] // Allow specific headers
-}));
+
+app.get('/', (request, response) => {
+	response.send('<h1>It is a fine day today!</h1>') 
+ })
+
+ app.get('/info', (request, response) => {
+	response.send  
+  ('There are ' + persons.length + ' persons in the phonebook' + '<br>' + '<br>' + 'Time: ' + kello.getHours() + ':' + kello.getMinutes() + ':' + kello.getSeconds() + ':' + kello.getMilliseconds() + '<br>' + 'Timezone: ' +  (kello.getTimezoneOffset()/60) + ' GMT' + '<br>' + 'Date: ' + kello.getDate() + '/' + (kello.getMonth() + 1) + '/' + kello.getFullYear() 
+     ) 
+ })
 
 
 app.post('/api/persons', (request,response)  => {
@@ -28,22 +46,16 @@ app.post('/api/persons', (request,response)  => {
   response.json(person)
   })
 
-app.get('/', (request, response) => {
-  response.send('<h1>Persons backend</h1>')
-})
-
-
-
-
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
-})
+    response.json(persons)
+  })
+
+
 
 app.get('/api/persons/:id', (request, response) => {
-	const id = Number(request.params.id)
+	const id = request.params.id
 	const person = persons.find(person => person.id === id)
-	
-	if (person) {
+  if (person) {
 	  response.json(person)
 	} else {
 	  response.status(404).end()
@@ -51,6 +63,7 @@ app.get('/api/persons/:id', (request, response) => {
   })  
  
 
+  
 
 const PORT = 3001
 app.listen(PORT, () => {
