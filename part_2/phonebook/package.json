@@ -3,10 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "/react_phonebook",
+  "homepage": "/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ui": "bash -c \"rm -rf dist && npm run build && cp -r dist ../../part_3/backend\" ",
     "lint": "eslint .",
     "preview": "vite preview",
      "server": "json-server -p 3001 db.json"

@@ -11,11 +11,12 @@ h2:first-child::first-letter{font-size:3rem;}
 li{text-decoration: none;padding:4px;margin-left:1rem}
 ul{padding:0;margin:0}
 
-.page2 button{background:#aaf}
-.page1 button{background:limegreen;padding:2px 20px 2px  20px }
+.page2 button{background:rgb(56, 56, 85)}
+.page1 button{background:lightskyblue;padding:2px 20px 2px  20px }
 .page1 button:hover{box-shadow: 0 0 0 2px #fff}
-.page2 button:hover{box-shadow: 0 0 0 2px red  }
-
+.page2 button:hover{box-shadow: 0 0 0 2px rgb(122, 104, 104)  }
+.success{background:green;color:#fff;margin-top:10px;padding:5px}
+.error{background:red;color:#fff;margin-top:10px;padding:5px}
 
 .page1{background:#1e1e1e;margin-left:1rem;padding:1px 20px  20px 20px; margin-top:1rem; width:300px;text-align:left;  box-shadow:0px 0px 0 2px #777;float:left;min-height:500px;max-width:300px}
 
