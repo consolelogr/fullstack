@@ -22,11 +22,12 @@ const App = () => {
     if (!message) return null;
     return <div className="error">{message}</div>;
   };
-   
+
 
 
   // useEffect is a hook that allows you to perform side effects in function components.
   useEffect(() => {
+    console.log('Front-end build 10072025');
     console.log('Fetching persons from server...');
     contactsService
       .getAll()
@@ -34,19 +35,19 @@ const App = () => {
         setPersons(response.data);
       })
       .catch(error => {
-        setErrorMessage('Error connecting to server',error);
+        setErrorMessage('Error connecting to server', error);
         setTimeout(() => setErrorMessage(null), 5000); // clears after 5 seconds
       });
-      
+
   }, []);
 
 
   // handlers stay in App.jsx
   const handleNameChange = (event) => { setNewName(event.target.value) }
   const handlePhoneChange = (event) => { setNewPhone(event.target.value) }
-  const handleSearchChange = (event) => { setSearch(event.target.value) } 
-  
-  
+  const handleSearchChange = (event) => { setSearch(event.target.value) }
+
+
 
   const handleDelete = (id) => {
     const person = persons.find(p => p.id === id);
@@ -59,8 +60,8 @@ const App = () => {
         setPersons(persons.filter(p => p.id !== id));
       })
       .catch(error => {
-        console.error('Error deleting person:', error,id);
-        console.log('Error deleting person:', error,id);
+        console.error('Error deleting person:', error, id);
+        console.log('Error deleting person:', error, id);
         setErrorMessage('Person already removed from server');
         setTimeout(() => setErrorMessage(null), 5000);
       });
@@ -68,15 +69,14 @@ const App = () => {
 
   const handleAddPerson = (event) => {
     event.preventDefault();
-    if (newName ==="" || newPhone===""){
+    if (newName === "" || newPhone === "") {
       alert("Fill both name and phone number")
       return
     }
     console.log(newName);
-    if (newName !==""){
+    if (newName !== "") {
       if (persons.some(person => person.name === newName)) {
-        if (confirm(`${newName} is already added to the phonebook. Replace the old number with a new one?`) === true)
-        {
+        if (confirm(`${newName} is already added to the phonebook. Replace the old number with a new one?`) === true) {
           const personToUpdate = persons.find(person => person.name === newName);
           const updatedPerson = { ...personToUpdate, number: newPhone };
           contactsService
@@ -92,14 +92,14 @@ const App = () => {
               console.error('Error updating person:', error);
               setErrorMessage('Error updating person');
               setTimeout(() => setErrorMessage(null), 5000); // clears after 5 seconds
-            
+
             });
 
         }
         // Update the state with the updated person
         return;
       }
-      
+
     }
     else { console.log("ei onnaa") }
 
@@ -114,14 +114,17 @@ const App = () => {
         console.log('New person added:', response.data);
         setSuccessMessage('Person added!');
         setTimeout(() => setSuccessMessage(null), 5000);
-        
+
       })
-      .catch(error => {console.error('(app.jsx) Error adding person:', error);
-        setErrorMessage('Person NOT added!', error)
+      .catch(error => {
+        console.error('(app.jsx) Error adding person:', error);
+        if (error.response && error.response.data && error.response.data.error) {
+          setErrorMessage(error.response.data.error);
+        } else {
+          setErrorMessage('Person NOT added!');
+        }
         setTimeout(() => setErrorMessage(null), 5000);
-        
-      }
-    );
+      })
     // Update the state with the new person 
   }
 
@@ -130,9 +133,6 @@ const App = () => {
     <div>
       <div className='page1'>
         <h2>Phonebook</h2>
-       
-
-
         <Filter search={search} handleSearchChange={handleSearchChange} />
         <br />
         <h2>Add new</h2>
@@ -143,8 +143,8 @@ const App = () => {
           newPhone={newPhone}
           handleAddPerson={handleAddPerson}
         />
-         <SuccessNotification message={successMessage} />
-         <ErrorNotification message={errorMessage} />
+        <SuccessNotification message={successMessage} />
+        <ErrorNotification message={errorMessage} />
       </div>
       <div className='page2'>
         <br />
