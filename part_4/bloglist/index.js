@@ -1,31 +1,14 @@
-const express = require('express')
 const mongoose = require('mongoose')
 const fs = require('fs')
 const config = require('./utils/config')
+const blogsRouter = require('./controllers/blogs')
 const Blog = require('./models/blog')
-const app = express()
 
+const express_middleware = require('./middleware/express_middleware')
+const app = express_middleware()
 const mongoUrl = config.PORT;
 
-// Middleware
-app.use(express.json())
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Hello! API is running at /api/blogs')
-})
-
-// API routes
-app.get('/api/blogs', async (req, res) => {
-  const blogs = await Blog.find({})
-  res.json(blogs)
-})
-
-app.post('/api/blogs', async (req, res) => {
-  const blog = new Blog(req.body)
-  const result = await blog.save()
-  res.status(201).json(result)
-})
 
 // Connect to MongoDB and insert sample blogs
 mongoose.connect(mongoUrl)
@@ -46,4 +29,5 @@ mongoose.connect(mongoUrl)
 
 // Start server
 const PORT = 3003
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
