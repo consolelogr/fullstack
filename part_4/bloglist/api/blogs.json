@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Hello World",
+    "author": "Teemu",
+    "url": "http://example.com",
+    "likes": 42
+  },
+  {
+    "title": "Hi There",
+    "author": "Tester",
+    "url": "http://test.com",
+    "likes": 10
+  }
+]
