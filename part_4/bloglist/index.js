@@ -3,7 +3,6 @@ const fs = require('fs')
 const config = require('./utils/config')
 const blogsRouter = require('./controllers/blogs')
 const Blog = require('./models/blog')
-
 const express_middleware = require('./middleware/express_middleware')
 const app = express_middleware()
 const mongoUrl = config.PORT;
@@ -28,6 +27,5 @@ mongoose.connect(mongoUrl)
   .catch(err => console.error('MongoDB connection error:', err))
 
 // Start server
-const PORT = 3003
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+app.listen(config.serverPORT, () => console.log(`Server running on port ${config.serverPORT}`))
