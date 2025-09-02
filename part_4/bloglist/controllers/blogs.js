@@ -11,13 +11,13 @@ blogsRouter.get("/", (req, res) => {
 });
 
 // GET all blogs
-blogsRouter.get("/api/blogs", async (req, res) => {
+blogsRouter.get("/", async (req, res) => {
   const blogs = await Blog.find({});
   res.json(blogs);
 });
 
 // POST a new blog
-blogsRouter.post("/api/blogs", async (req, res) => {
+blogsRouter.post("/", async (req, res) => {
   const blog = new Blog(req.body);
   const result = await blog.save();
   res.status(201).json(result);

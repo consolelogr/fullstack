@@ -1,16 +1,13 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 const config = require('./utils/config')
-const blogsRouter = require('./controllers/blogs')
 const Blog = require('./models/blog')
-const express_middleware = require('./middleware/express_middleware')
-const app = express_middleware()
-const mongoUrl = config.PORT;
+const app = require('./app.js')
 
 
 
 // Connect to MongoDB and insert sample blogs
-mongoose.connect(mongoUrl)
+mongoose.connect(config.PORT)
   .then(async () => {
     console.log('Connected to MongoDB')
 
