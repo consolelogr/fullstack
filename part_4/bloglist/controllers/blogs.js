@@ -5,11 +5,12 @@ const fs = require("fs");
 
 const blogsRouter = express.Router();
 
+/*
 // Root route
 blogsRouter.get("/", (req, res) => {
   res.send("Hello! API is running at /api/blogs");
 });
-
+*/
 // GET all blogs
 blogsRouter.get("/", async (req, res) => {
   const blogs = await Blog.find({});

@@ -5,11 +5,14 @@ const Blog = require('./models/blog')
 const app = require('./app.js')
 
 
+console.log('ENV:', process.env.NODE_ENV)
+console.log('MONGO:', MONGODB_URI)
 
 // Connect to MongoDB and insert sample blogs
 mongoose.connect(config.PORT)
   .then(async () => {
     console.log('Connected to MongoDB')
+
 
     const count = await Blog.countDocuments({})
     if (count === 0) {
