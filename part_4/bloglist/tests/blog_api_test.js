@@ -1,14 +1,29 @@
-const { test, after } = require('node:test')
+const { test, after, before } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-2
+const { MONGODB_URI } = require('../utils/config')
+
 const api = supertest(app)
 
-
+// Optional: debug environment
 console.log('NODE_ENV:', process.env.NODE_ENV)
-console.log('MONGODB_URI:', process.env.MONGODB_URI)
+console.log('MONGODB_URI:', MONGODB_URI)
 
+before(async () => {
+  // Connect to MongoDB before tests
+  await mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  console.log('✅ Connected to MongoDB')
+})
+
+after(async () => {
+  // Close the connection after tests
+  await mongoose.connection.close()
+  console.log('✅ MongoDB connection closed')
+})
 
 test('debug /api/blogs', async () => {
   const response = await api.get('/api/blogs')
@@ -16,18 +31,3 @@ test('debug /api/blogs', async () => {
   console.log('Content-Type:', response.headers['content-type'])
   console.log('Body:', response.text)
 })
-
-
-/*
-test('Blogs are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-})
-
-after(async () => {
-  await mongoose.connection.close()
-})
-
-*/
