@@ -31,3 +31,24 @@ test('debug /api/blogs', async () => {
   console.log('Content-Type:', response.headers['content-type'])
   console.log('Body:', response.text)
 })
+
+test('debug /api/blogs', async () => {
+  const response = await api.get('/api/blogs')
+  console.log('Status:', response.status)
+  console.log('Content-Type:', response.headers['content-type'])
+  console.log('Body:', response.text)
+})
+
+const assert = require('node:assert')
+
+test('unique identifier property of the blog posts is named id', async () => {
+  const response = await api.get('/api/blogs')
+  const blog = response.body[0]
+
+  // Check that 'id' exists
+  assert.ok(blog.id, 'Blog should have id')
+
+  // Check that '_id' is undefined
+  assert.strictEqual(blog._id, undefined, 'Blog should not have _id')
+})
+
