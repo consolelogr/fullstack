@@ -6,6 +6,8 @@ const { MONGODB_URI } = require('../utils/config')
 
 const api = supertest(app)
 
+console.log('MONGODB_URI:', MONGODB_URI)
+
 // Optional: debug environment
 console.log('NODE_ENV:', process.env.NODE_ENV)
 console.log('MONGODB_URI:', MONGODB_URI)
@@ -52,3 +54,34 @@ test('unique identifier property of the blog posts is named id', async () => {
   assert.strictEqual(blog._id, undefined, 'Blog should not have _id')
 })
 
+
+const Blog = require('../models/blog')
+
+test('does it make a new post', async () => {
+  // Get blogs before adding
+  const blogsAtStart = await Blog.find({})
+
+  const newBlog = {
+    title: 'Testing Blog Creation',
+    author: 'Janey Weiny',
+    url: 'http://altavista.com',
+    likes: 5,
+  }
+
+  // Make POST request
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  // Get blogs after adding
+  const blogsAtEnd = await Blog.find({})
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
+
+  // Check that the added blog is in the database
+  const titles = blogsAtEnd.map(b => b.title)
+  assert.ok(titles.includes('Testing Blog Creation'))
+})
+
+console.log("end of test")
