@@ -1,0 +1,102 @@
+git add . && git commit -m "YOUR COMMIT MESSAGE" && git push
+
+
+4.9  zibidi
+
+✅ Step 1 — Make sure your POST route works
+
+In controllers/blogs.js (or wherever your routes are), you should already have something like:
+
+const blogsRouter = require('express').Router()
+const Blog = require('../models/blog')
+
+blogsRouter.post('/', async (request, response) => {
+  const body = request.body
+
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes || 0
+  })
+
+  const savedBlog = await blog.save()
+  response.status(201).json(savedBlog)
+})
+
+module.exports = blogsRouter
+
+
+Make sure your /api/blogs route uses this router in app.js:
+
+const blogsRouter = require('./controllers/blogs')
+app.use('/api/blogs', blogsRouter)
+
+✅ Step 2 — Write the test in tests/blog_api_test.js
+
+You already have your GET tests. Now add this one below them:
+
+const assert = require('node:assert')
+const Blog = require('../models/blog')
+
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: 'Testing Blog Creation',
+    author: 'ChatGPT',
+    url: 'http://example.com/test',
+    likes: 5,
+  }
+
+  // Get blogs before adding
+  const blogsAtStart = await Blog.find({})
+
+  // Make POST request
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  // Get blogs after adding
+  const blogsAtEnd = await Blog.find({})
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
+
+  // Check that the added blog is in the database
+  const titles = blogsAtEnd.map(b => b.title)
+  assert.ok(titles.includes('Testing Blog Creation'))
+})
+
+✅ Step 3 — Clean up test database between tests (optional but good practice)
+
+At the top of your test file, you can ensure the database starts clean:
+
+const Blog = require('../models/blog')
+
+beforeEach(async () => {
+  await Blog.deleteMany({}) // clear all blogs
+  const initialBlog = new Blog({
+    title: 'Initial blog',
+    author: 'Test Author',
+    url: 'http://example.com',
+    likes: 10,
+  })
+  await initialBlog.save()
+})
+
+
+That way, you always start from a known state.
+
+✅ Step 4 — Run the tests
+node --test
+
+
+You should see:
+
+✔ a valid blog can be added
+
+✅ Optional (for 4.11)
+
+The next step (4.11) will ask you to check what happens when "likes" is missing (it should default to 0).
+So don’t delete this test — we’ll build on it later.
+
+Would you like me to combine 4.8 + 4.9 + 4.10 into one full blog_api_test.js so you can just copy it and have everything working together?

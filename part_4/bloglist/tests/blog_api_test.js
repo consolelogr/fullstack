@@ -6,6 +6,8 @@ const { MONGODB_URI } = require('../utils/config')
 
 const api = supertest(app)
 
+
+
 console.log('MONGODB_URI:', MONGODB_URI)
 
 // Optional: debug environment
@@ -84,4 +86,42 @@ test('does it make a new post', async () => {
   assert.ok(titles.includes('Testing Blog Creation'))
 })
 
-console.log("end of test")
+// 4.13 DELETE a blog
+test('deleting a blog succeeds with status 204', async () => {
+  const blogsAtStart = await Blog.find({})
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const blogsAtEnd = await Blog.find({})
+  const titles = blogsAtEnd.map(b => b.title)
+
+  // Blog count decreased by 1
+  assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+  // Deleted blog is gone
+  assert.ok(!titles.includes(blogToDelete.title))
+})
+
+// 4.14 UPDATE a blog (e.g., likes)
+test('updating likes of a blog works', async () => {
+  const blogsAtStart = await Blog.find({})
+  const blogToUpdate = blogsAtStart[0]
+
+  const updatedData = { likes: blogToUpdate.likes + 1 }
+
+  const response = await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedData)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  // Verify likes updated
+  assert.strictEqual(response.body.likes, blogToUpdate.likes + 1)
+
+  // Optional: verify other fields remain the same
+  assert.strictEqual(response.body.title, blogToUpdate.title)
+  assert.strictEqual(response.body.author, blogToUpdate.author)
+})
+

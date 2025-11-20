@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const mongoose = require('mongoose')
 const fs = require('fs')
 const config = require('./utils/config')
@@ -6,11 +8,13 @@ const app = require('./app.js')
 
 
 console.log('ENV:', process.env.NODE_ENV)
-console.log('MONGO:', MONGODB_URI)
+console.log('MONGO:', process.env.MONGODB_URI)
 
 // Connect to MongoDB and insert sample blogs
-mongoose.connect(config.PORT)
-  .then(async () => {
+
+mongoose.connect(config.MONGODB_URI)
+
+.then(async () => {
     console.log('Connected to MongoDB')
 
 
@@ -28,4 +32,4 @@ mongoose.connect(config.PORT)
 
 // Start server
 
-app.listen(config.serverPORT, () => console.log(`Server running on port ${config.serverPORT}`))
+app.listen(config.PORT, () => console.log(`Server running on port ${config.PORT}`))
