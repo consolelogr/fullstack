@@ -10,21 +10,39 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-
-  const LoginForm = ({ handleLogin }) => {
- 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-  }
-
-  // NEW STATE FOR BLOG FORM
+  
+  // ADD THESE
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
 
+ const LoginForm = ({ handleLogin, username, setUsername, password, setPassword }) => {
+  // You no longer need the local 'handleSubmit' function.
+  // The 'event.preventDefault()' call must be inside the handleLogin function in App.js.
+
   return (
-    <form onSubmit={handleSubmit}>
-      {/* Input fields for username and password */}
+    // 1. Connect the form directly to the handleLogin prop
+    <form onSubmit={handleLogin}>
+      <div>
+        username <br />
+        <input
+          type="text"
+          value={username}
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+
+      <div>
+        <br />
+        password <br />
+        <input
+          type="password"
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+
+      <br />
       <button type="submit">login</button>
     </form>
   )
@@ -95,6 +113,7 @@ const handleAddBlog = (event) => {
 
     } catch (error) {
       setErrorMessage('wrong credentials')
+
       setTimeout(() => setErrorMessage(null), 3000)
     }
   }
