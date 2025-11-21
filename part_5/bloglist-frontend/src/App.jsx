@@ -30,6 +30,27 @@ const App = () => {
   )
 }
 
+// Put this function inside the main App component
+const handleAddBlog = (event) => {
+  event.preventDefault()
+  
+  const newBlog = {
+    title: newTitle,
+    author: newAuthor,
+    url: newUrl,
+  }
+
+  // NOTE: The actual posting logic (blogService.create) will go here 
+  // in the next step, once we ensure the service handles the token.
+  
+  console.log('Attempting to create blog:', newBlog)
+  
+  // Clear the form fields
+  setNewTitle('')
+  setNewAuthor('')
+  setNewUrl('')
+}
+
 
 
   // Load blogs only when user is logged in
@@ -118,6 +139,7 @@ const App = () => {
     )
   }
 
+ /*
   return (
     <div>
       <h2>blogs</h2>
@@ -133,6 +155,40 @@ const App = () => {
       )}
     </div>
   )
-}
+*/
 
+
+  
+
+// Inside the 'return' block of App.js (when user is NOT null)
+
+return (
+  <div>
+    <h2>blogs</h2>
+    <p>
+      {user.name} logged in
+      <button onClick={handleLogout} style={{ marginLeft: '1rem' }}>
+        logout
+      </button>
+    </p>
+
+    {/* RENDER THE NEW BLOG FORM HERE */}
+    <BlogForm 
+      addBlog={handleAddBlog}
+      newTitle={newTitle}
+      setNewTitle={setNewTitle}
+      newAuthor={newAuthor}
+      setNewAuthor={setNewAuthor}
+      newUrl={newUrl}
+      setNewUrl={setNewUrl}
+    />
+    {/* END RENDER */}
+
+    {blogs.map(blog =>
+      <Blog key={blog.id} blog={blog} />
+    )}
+  </div>
+)
+
+}
 export default App

@@ -1,6 +1,6 @@
 import axios from 'axios'
 // The standard endpoint for the login resource in FSO is /api/login
-const baseUrl = '/api/login'
+const baseUrl = '/services/login'
 
 const login = async credentials => {
   // axios.post automatically serializes the credentials object to JSON
