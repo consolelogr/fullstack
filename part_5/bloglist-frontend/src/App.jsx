@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/blogForm'
+import Notification from './components/Notifications'
+import './index.css'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -10,19 +12,19 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  
-  // ADD THESE
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
 
- const LoginForm = ({ handleLogin, username, setUsername, password, setPassword }) => {
-  // You no longer need the local 'handleSubmit' function.
-  // The 'event.preventDefault()' call must be inside the handleLogin function in App.js.
 
+ const LoginForm = ({ handleLogin, username, setUsername, password, setPassword }) => {
+  
   return (
     // 1. Connect the form directly to the handleLogin prop
+    
     <form onSubmit={handleLogin}>
+    <Notification message={errorMessage} />
+
       <div>
         username <br />
         <input
@@ -48,26 +50,39 @@ const App = () => {
   )
 }
 
-// Put this function inside the main App component
-const handleAddBlog = (event) => {
+const handleAddBlog = async (event) => {
   event.preventDefault()
-  
-  const newBlog = {
-    title: newTitle,
-    author: newAuthor,
-    url: newUrl,
-  }
 
-  // NOTE: The actual posting logic (blogService.create) will go here 
-  // in the next step, once we ensure the service handles the token.
-  
-  console.log('Attempting to create blog:', newBlog)
-  
-  // Clear the form fields
-  setNewTitle('')
-  setNewAuthor('')
-  setNewUrl('')
+  try {
+    const newBlog = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl,
+    }
+
+    const returnedBlog = await blogService.create(newBlog)
+
+    // update UI
+    setBlogs(blogs.concat(returnedBlog))
+
+    // SUCCESS NOTIFICATION
+    setErrorMessage(`a new blog "${returnedBlog.title}" by ${returnedBlog.author} added`)
+    setTimeout(() => setErrorMessage(null), 4000)
+
+
+    
+    // clear fields
+    setNewTitle('')
+    setNewAuthor('')
+    setNewUrl('')
+
+  } catch (error) {
+    // ERROR NOTIFICATION
+    setErrorMessage('failed to create blog')
+    setTimeout(() => setErrorMessage(null), 4000)
+  }
 }
+
 
 
 
@@ -128,6 +143,8 @@ const handleAddBlog = (event) => {
     return (
       <div style={{ textAlign: 'center', marginTop: '2rem' }}>
         <h2>Log in to application</h2>
+              <Notification message={errorMessage} />
+
 
         {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
@@ -184,6 +201,9 @@ const handleAddBlog = (event) => {
 return (
   <div>
     <h2>blogs</h2>
+
+    <Notification message={errorMessage} />
+
     <p>
       {user.name} logged in
       <button onClick={handleLogout} style={{ marginLeft: '1rem' }}>
@@ -191,7 +211,6 @@ return (
       </button>
     </p>
 
-    {/* RENDER THE NEW BLOG FORM HERE */}
     <BlogForm 
       addBlog={handleAddBlog}
       newTitle={newTitle}
@@ -201,13 +220,11 @@ return (
       newUrl={newUrl}
       setNewUrl={setNewUrl}
     />
-    {/* END RENDER */}
 
     {blogs.map(blog =>
       <Blog key={blog.id} blog={blog} />
     )}
   </div>
 )
-
 }
 export default App
