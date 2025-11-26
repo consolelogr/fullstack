@@ -8,6 +8,13 @@
 }
 
 body {
-    background: #111;
+    margin-left: 10vw;
+    background: #222;
     color: #ddd;
+}
+
+button {
+    background: #444;
+    color: #ddd;
+    margin-left: 10px;
 }
