@@ -5,6 +5,9 @@ import loginService from './services/login'
 import BlogForm from './components/blogForm'
 import Notification from './components/Notifications'
 import './index.css'
+import Togglable from './components/Togglable'
+import { useRef } from 'react'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,9 +18,29 @@ const App = () => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const blogFormRef = useRef()
+
+
+const updateBlog = async (updatedBlog) => {
+  try {
+    const returnedBlog = await blogService.update(updatedBlog.id, updatedBlog)
+    console.log("Returned from backend:", returnedBlog)
+
+    setBlogs(blogs.map(b => 
+      b.id === updatedBlog.id ? returnedBlog : b
+    ))
+
+  } catch (err) {
+    console.error(err)
+    setErrorMessage("Could not update blog")
+    setTimeout(() => setErrorMessage(null), 4000);
+  }
+}
+
 
 
  const LoginForm = ({ handleLogin, username, setUsername, password, setPassword }) => {
+
   
   return (
     // 1. Connect the form directly to the handleLogin prop
@@ -50,39 +73,22 @@ const App = () => {
   )
 }
 
-const handleAddBlog = async (event) => {
-  event.preventDefault()
-
+const handleAddBlog = async (blogObject) => {
   try {
-    const newBlog = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    }
-
-    const returnedBlog = await blogService.create(newBlog)
-
-    // update UI
+    const returnedBlog = await blogService.create(blogObject)
     setBlogs(blogs.concat(returnedBlog))
 
-    // SUCCESS NOTIFICATION
-    setErrorMessage(`a new blog "${returnedBlog.title}" by ${returnedBlog.author} added`)
+    setErrorMessage(
+      `a new blog "${returnedBlog.title}" by ${returnedBlog.author} added`
+    )
+
     setTimeout(() => setErrorMessage(null), 4000)
 
-
-    
-    // clear fields
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
-
   } catch (error) {
-    // ERROR NOTIFICATION
     setErrorMessage('failed to create blog')
     setTimeout(() => setErrorMessage(null), 4000)
   }
 }
-
 
 
 
@@ -211,8 +217,9 @@ return (
       </button>
     </p>
 
+<Togglable buttonLabel="create new blog" ref={blogFormRef}>
     <BlogForm 
-      addBlog={handleAddBlog}
+      createBlog={handleAddBlog}
       newTitle={newTitle}
       setNewTitle={setNewTitle}
       newAuthor={newAuthor}
@@ -220,10 +227,13 @@ return (
       newUrl={newUrl}
       setNewUrl={setNewUrl}
     />
+</Togglable>
 
-    {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} />
-    )}
+{blogs.map(blog =>
+  <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+)}
+
+
   </div>
 )
 }
