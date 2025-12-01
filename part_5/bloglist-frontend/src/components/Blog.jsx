@@ -1,59 +1,55 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-const Blog = ({ blog, updateBlog }) => {
-  const [visible, setVisible] = useState(false)
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
+  // => added removeBlog and user props
+  const [visible, setVisible] = useState(false);
 
-/*
-const handleLike = () => {
-  const updatedBlog = {
-    ...blog,
-    likes: blog.likes + 1
-  }
-              console.log("LIKE CLICKED, sending:", updatedBlog)  
+  const handleLike = () => {
+    updateBlog({
+      id: blog.id,
+      likes: blog.likes + 1,
+    });
+  };
 
-
-  updateBlog(updatedBlog)
-} 
-*/
-
-
-const handleLike = () => {
-  updateBlog({
-    id: blog.id,
-    likes: blog.likes + 1
-  })
-}
-
-
+  // => added: check if logged-in user owns this blog
+  const canDelete = user && blog.user && blog.user.username === user.username;
 
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     marginBottom: 5,
-  }
+  };
 
   return (
     <div style={blogStyle}>
-      <div>
-        {blog.title} — {blog.author}
-        <button onClick={() => setVisible(!visible)}>
-          {visible ? 'hide' : 'view'}
-        </button>
-      </div>
-
-      {visible && (
-        <div className="blog-details">
-          <div>{blog.url}</div>
-          <div>
-            likes {blog.likes}
-
-            <button onClick={handleLike}>like</button>
-          </div>
-          <div>{blog.user?.name}</div>
+      <div className="blog-basic">
+        <div>
+          {blog.title} — {blog.author}
+          <button onClick={() => setVisible(!visible)}>
+            {visible ? "hide" : "view"}
+          </button>
         </div>
-      )}
-    </div>
-  )
-}
 
-export default Blog
+        {visible && (
+          <div className="blog-details">
+            <div>{blog.url}</div>
+
+            <div>
+              likes {blog.likes}
+              <button onClick={handleLike}>like</button>
+            </div>
+
+            <div>{blog.user?.name}</div>
+
+            {/* => added delete button inside details */}
+            {canDelete && (
+              <button onClick={() => removeBlog(blog.id)}>delete</button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Blog;

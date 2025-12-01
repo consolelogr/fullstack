@@ -35,6 +35,18 @@ const App = () => {
     }
   };
 
+  // => added delete handler
+  const removeBlog = async (id) => {
+    if (!window.confirm("Delete this blog?")) return;
+
+    try {
+      await blogService.remove(id); // => calls backend delete
+      setBlogs(blogs.filter((b) => b.id !== id)); // => remove from state
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const LoginForm = ({
     handleLogin,
     username,
@@ -51,6 +63,7 @@ const App = () => {
         <div>
           username <br />
           <input
+            data-testid="username"
             type="text"
             value={username}
             onChange={({ target }) => setUsername(target.value)}
@@ -61,6 +74,7 @@ const App = () => {
           <br />
           password <br />
           <input
+            data-testid="password"
             type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
@@ -144,31 +158,13 @@ const App = () => {
         <h2>Log in to application</h2>
         <Notification message={errorMessage} />
 
-        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-
-        <form onSubmit={handleLogin}>
-          <div>
-            username <br />
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-
-          <div>
-            <br />
-            password <br />
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-
-          <br />
-          <button type="submit">login</button>
-        </form>
+        <LoginForm
+          handleLogin={handleLogin}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+        />
       </div>
     );
   }
@@ -218,9 +214,18 @@ const App = () => {
         />
       </Togglable>
 
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
-      ))}
+      {blogs
+        .slice()
+        .sort((a, b) => b.likes - a.likes)
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlog={updateBlog}
+            removeBlog={removeBlog}
+            user={user}
+          />
+        ))}
     </div>
   );
 };
