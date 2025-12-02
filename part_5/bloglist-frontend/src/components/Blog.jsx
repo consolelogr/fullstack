@@ -21,8 +21,8 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   };
 
   return (
-    <div style={blogStyle}>
-      <div className="blog-basic">
+    <div style={blogStyle} data-blog-id={blog.id} className="blog-basic">
+      <div>
         <div>
           {blog.title} — {blog.author}
           <button onClick={() => setVisible(!visible)}>
@@ -33,14 +33,12 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
         {visible && (
           <div className="blog-details">
             <div>{blog.url}</div>
-
+            // bloglist-frontend/src/components/Blog.jsx
             <div>
-              likes {blog.likes}
+              likes <span data-testid="likes-count">{blog.likes}</span>
               <button onClick={handleLike}>like</button>
             </div>
-
             <div>{blog.user?.name}</div>
-
             {/* => added delete button inside details */}
             {canDelete && (
               <button onClick={() => removeBlog(blog.id)}>delete</button>
