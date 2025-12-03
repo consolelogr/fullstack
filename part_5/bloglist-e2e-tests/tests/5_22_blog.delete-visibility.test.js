@@ -1,4 +1,3 @@
-// bloglist-e2e-tests/tests/091_blog.delete-visibility.test.js
 import { test, expect } from "@playwright/test";
 
 let blogId;

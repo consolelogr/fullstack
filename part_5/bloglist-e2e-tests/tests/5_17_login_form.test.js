@@ -1,4 +1,3 @@
-// tests/5_17_login_form.test.js
 const { test, expect, beforeEach, describe } = require("@playwright/test");
 
 describe("Blog app", () => {
@@ -7,15 +6,12 @@ describe("Blog app", () => {
   });
 
   test("Login form is shown", async ({ page }) => {
-    // The login form should be visible
     const loginForm = page.locator("form");
     await expect(loginForm).toBeVisible();
 
-    // Check that the login button exists and is visible
     const loginButton = page.getByRole("button", { name: /login/i });
     await expect(loginButton).toBeVisible();
 
-    // Check that at least one input exists
     const inputs = loginForm.locator("input");
     const inputCount = await inputs.count();
     expect(inputCount).toBeGreaterThan(0);

@@ -1,4 +1,3 @@
-// bloglist-e2e-tests/tests/login.test.js
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page, request }) => {
