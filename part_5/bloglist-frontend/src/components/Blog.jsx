@@ -36,12 +36,22 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
             // bloglist-frontend/src/components/Blog.jsx
             <div>
               likes <span data-testid="likes-count">{blog.likes}</span>
-              <button onClick={handleLike}>like</button>
+              <button
+                data-testid={`like-button-${blog.id}`}
+                onClick={handleLike}
+              >
+                like
+              </button>
             </div>
             <div>{blog.user?.name}</div>
             {/* => added delete button inside details */}
             {canDelete && (
-              <button onClick={() => removeBlog(blog.id)}>delete</button>
+              <button
+                data-testid={`delete-button-${blog.id}`}
+                onClick={() => removeBlog(blog.id)}
+              >
+                delete
+              </button>
             )}
           </div>
         )}
