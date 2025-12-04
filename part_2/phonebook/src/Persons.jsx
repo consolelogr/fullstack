@@ -1,8 +1,8 @@
 const Persons = ({ persons, search, handleDelete }) => {
-  // Check if persons is an array and not null/undefined
-  const filteredPersons = (Array.isArray(persons) ? persons : []).filter((person) => (
-    person?.name?.toLowerCase().includes(search.toLowerCase()) ?? false
-  ));
+  const filteredPersons = (Array.isArray(persons) ? persons : []).filter(
+    (person) =>
+      person?.name?.toLowerCase().includes(search.toLowerCase()) ?? false,
+  );
   return (
     <div>
       <ul>
@@ -20,6 +20,6 @@ const Persons = ({ persons, search, handleDelete }) => {
       </ul>
     </div>
   );
-}
+};
 
 export default Persons;

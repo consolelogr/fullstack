@@ -1,138 +1,216 @@
-import { useState, useEffect } from 'react'  //named import
+import { useState, useEffect } from "react";
+import Filter from "./Filter";
+import PersonForm from "./PersonForm";
+import Persons from "./Persons";
+import contactsService from "./services/contactsService";
+import Notification from "./Notification";
 
-import Filter from './Filter'
-import PersonForm from './PersonForm'
-import Persons from './Persons'
-import contactsService from './services/contactsService'
+const ConfirmationDialog = ({ message, onConfirm, onCancel }) => {
+  if (!message) return null;
 
+  const dialogStyle = {
+    position: "fixed",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#fff",
+    padding: "20px",
+    borderRadius: "8px",
+    zIndex: 1000,
+    textAlign: "center",
+  };
 
-// State initialization. React useState hook returns an array, and we use array destructuring to pull out the values.
+  const backdropStyle = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#222",
+    zIndex: 9999,
+  };
+
+  return (
+    <div style={backdropStyle}>
+      <div style={dialogStyle}>
+        <p>{message}</p>
+        <button
+          onClick={onConfirm}
+          style={{
+            marginRight: "10px",
+            padding: "8px 15px",
+            backgroundColor: "#4CAC40",
+            color: "#fff",
+            border: "none",
+            borderRadius: "2px",
+            cursor: "pointer",
+          }}
+        >
+          Yes
+        </button>
+        <button
+          onClick={onCancel}
+          style={{
+            padding: "8px 15px",
+            backgroundColor: "#f34346",
+            color: "#FFF",
+            border: "none",
+            borderRadius: "2px",
+            cursor: "pointer",
+          }}
+        >
+          No
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
-  const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newPhone, setNewPhone] = useState('')
-  const [search, setSearch] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-  const SuccessNotification = ({ message }) => {
-    if (!message) return null;
-    return <div className="success">{message}</div>;
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [search, setSearch] = useState("");
+
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null,
+  });
+
+  const [confirmation, setConfirmation] = useState(null);
+  const [dialogAction, setDialogAction] = useState(null);
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification({ message: null, type: null });
+    }, 5000);
   };
-  const ErrorNotification = ({ message }) => {
-    if (!message) return null;
-    return <div className="error">{message}</div>;
-  };
 
-
-
-  // useEffect is a hook that allows you to perform side effects in function components.
   useEffect(() => {
-    console.log('Front-end build 10072025');
-    console.log('Fetching persons from server...');
+    console.log("Fetching persons");
     contactsService
       .getAll()
-      .then(response => {
+      .then((response) => {
         setPersons(response.data);
       })
-      .catch(error => {
-        setErrorMessage('Error connecting to server', error);
-        setTimeout(() => setErrorMessage(null), 5000); // clears after 5 seconds
+      .catch((error) => {
+        showNotification("Error connecting to server", "error");
       });
-
   }, []);
 
-
-  // handlers stay in App.jsx
-  const handleNameChange = (event) => { setNewName(event.target.value) }
-  const handlePhoneChange = (event) => { setNewPhone(event.target.value) }
-  const handleSearchChange = (event) => { setSearch(event.target.value) }
-
-
+  const handleNameChange = (event) => {
+    setNewName(event.target.value);
+  };
+  const handlePhoneChange = (event) => {
+    setNewPhone(event.target.value);
+  };
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
 
   const handleDelete = (id) => {
-    const person = persons.find(p => p.id === id);
-    const confirmDelete = window.confirm(`Delete ${person.name}?`);
-    if (!confirmDelete) return;
+    const person = persons.find((p) => p.id === id);
 
+    setConfirmation(`Delete ${person.name}?`);
+    setDialogAction(() => () => {
+      setConfirmation(null);
+      contactsService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter((p) => p.id !== id));
+          showNotification(`Removed ${person.name}`, "success");
+        })
+        .catch((error) => {
+          showNotification(
+            `Information of ${person.name} has already been removed from server`,
+            "error",
+          );
+          setPersons(persons.filter((p) => p.id !== id));
+        });
+    });
+  };
+
+  const handleUpdateExisting = (personToUpdate) => {
+    const updatedPerson = { ...personToUpdate, number: newPhone };
     contactsService
-      .remove(id)
-      .then(() => {
-        setPersons(persons.filter(p => p.id !== id));
+      .update(personToUpdate.id, updatedPerson)
+      .then((response) => {
+        setPersons(
+          persons.map((person) =>
+            person.id !== personToUpdate.id ? person : response.data,
+          ),
+        );
+        setNewName("");
+        setNewPhone("");
+        showNotification(
+          `Updated phone number for ${response.data.name}`,
+          "success",
+        );
       })
-      .catch(error => {
-        console.error('Error deleting person:', error, id);
-        console.log('Error deleting person:', error, id);
-        setErrorMessage('Person already removed from server');
-        setTimeout(() => setErrorMessage(null), 5000);
+      .catch((error) => {
+        showNotification(
+          error.response?.data?.error ||
+            `Error updating ${personToUpdate.name}`,
+          "error",
+        );
+      });
+  };
+
+  const handleAddNewPerson = () => {
+    const newPerson = { name: newName, number: newPhone };
+    contactsService
+      .create(newPerson)
+      .then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewPhone("");
+        showNotification(`Added ${response.data.name}`, "success");
+      })
+      .catch((error) => {
+        showNotification(
+          error.response?.data?.error || "Person NOT added!",
+          "error",
+        );
       });
   };
 
   const handleAddPerson = (event) => {
     event.preventDefault();
+
     if (newName === "" || newPhone === "") {
-      alert("Fill both name and phone number")
-      return
+      showNotification("Fill both name and phone number", "error");
+      return;
     }
-    console.log(newName);
-    if (newName !== "") {
-      if (persons.some(person => person.name === newName)) {
-        if (confirm(`${newName} is already added to the phonebook. Replace the old number with a new one?`) === true) {
-          const personToUpdate = persons.find(person => person.name === newName);
-          const updatedPerson = { ...personToUpdate, number: newPhone };
-          contactsService
-            .update(personToUpdate.id, updatedPerson)
-            .then(response => {
-              setPersons(persons.map(person => (person.id !== personToUpdate.id ? person : response.data)));
-              setNewName('');
-              setNewPhone('');
-              console.log('Person updated:', response.data);
 
-            })
-            .catch(error => {
-              console.error('Error updating person:', error);
-              setErrorMessage('Error updating person');
-              setTimeout(() => setErrorMessage(null), 5000); // clears after 5 seconds
+    const existingPerson = persons.find((person) => person.name === newName);
 
-            });
-
-        }
-        // Update the state with the updated person
-        return;
-      }
-
+    if (existingPerson) {
+      setConfirmation(
+        `${newName} is already added to the phonebook. Replace the old number with a new one?`,
+      );
+      setDialogAction(() => () => {
+        setConfirmation(null);
+        handleUpdateExisting(existingPerson);
+      });
+    } else {
+      handleAddNewPerson();
     }
-    else { console.log("ei onnaa") }
+  };
 
-    const newPerson = { name: newName, number: newPhone };
-
-    contactsService // Create a new contact
-      .create(newPerson)
-      .then(response => {
-        setPersons(persons.concat(response.data)); // Update state with the new data
-        setNewName('');
-        setNewPhone('');
-        console.log('New person added:', response.data);
-        setSuccessMessage('Person added!');
-        setTimeout(() => setSuccessMessage(null), 5000);
-
-      })
-      .catch(error => {
-        console.error('(app.jsx) Error adding person:', error);
-        if (error.response && error.response.data && error.response.data.error) {
-          setErrorMessage(error.response.data.error);
-        } else {
-          setErrorMessage('Person NOT added!');
-        }
-        setTimeout(() => setErrorMessage(null), 5000);
-      })
-    // Update the state with the new person 
-  }
-
-  //Return all wrapped in div
   return (
     <div>
-      <div className='page1'>
+      <div className="page1">
         <h2>Phonebook</h2>
+
+        <Notification message={notification.message} type={notification.type} />
+
+        <ConfirmationDialog
+          message={confirmation}
+          onConfirm={dialogAction || (() => setConfirmation(null))}
+          onCancel={() => setConfirmation(null)}
+        />
+
         <Filter search={search} handleSearchChange={handleSearchChange} />
         <br />
         <h2>Add new</h2>
@@ -143,18 +221,18 @@ const App = () => {
           newPhone={newPhone}
           handleAddPerson={handleAddPerson}
         />
-        <SuccessNotification message={successMessage} />
-        <ErrorNotification message={errorMessage} />
       </div>
-      <div className='page2'>
+      <div className="page2">
         <br />
         <h2>Numbers</h2>
-        <Persons persons={persons} search={search} handleDelete={handleDelete} />
+        <Persons
+          persons={persons}
+          search={search}
+          handleDelete={handleDelete}
+        />
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default App
-
-// Next error message....
+export default App;
