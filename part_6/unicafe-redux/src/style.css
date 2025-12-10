@@ -1,0 +1,17 @@
+body {
+    background: #222;
+    color: #eee;
+    font-size: 24px;
+}
+.Appwrap {
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+button {
+    background: #555;
+    color: #eee;
+    padding: 10px;
+    font-size: 24px;
+    margin-right: 5px;
+    border-radius: 5px;
+}
