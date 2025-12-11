@@ -13,19 +13,22 @@ const App = () => {
     // --> new function
     event.preventDefault();
     const content = event.target.anecdote.value;
+
     const newAnecdote = {
-      id: Math.floor(Math.random() * 1000000), // simple unique id
+      id: Math.floor(Math.random() * 1000000),
       content,
       votes: 0,
     };
     dispatch({ type: "CREATE", anecdote: newAnecdote });
-    event.target.anecdote.value = ""; // clear input
+    event.target.anecdote.value = "";
   };
+
+  const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes);
 
   return (
     <div>
       <h2>Anecdotes</h2>
-      {anecdotes.map((anecdote) => (
+      {sortedAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>
