@@ -19,6 +19,24 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
+export const voteAnecdote = (id) => {
+  return {
+    type: "VOTE",
+    id,
+  };
+};
+
+export const createAnecdote = (content) => {
+  return {
+    type: "CREATE",
+    anecdote: {
+      id: Math.floor(Math.random() * 1000000),
+      content,
+      votes: 0,
+    },
+  };
+};
+
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case "VOTE":
