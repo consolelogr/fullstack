@@ -1,5 +1,3 @@
-// src/components/Filter.jsx
-
 import { useDispatch } from "react-redux";
 import { setFilter } from "../reducers/filterReducer";
 
