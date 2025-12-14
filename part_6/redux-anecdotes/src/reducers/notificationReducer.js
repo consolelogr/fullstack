@@ -1,23 +1,21 @@
+// 0115 change all...
 import { createSlice } from "@reduxjs/toolkit";
-
-const initialState = "";
 
 const notificationSlice = createSlice({
   name: "notification",
-  initialState,
+  initialState: "",
   reducers: {
     setNotification: (state, action) => action.payload,
-    clearNotification: () => ""
-  }
+    clearNotification: () => "",
+  },
 });
 
-
-export const showNotification = (message, time = 5000) => {
-  return async (dispatch) => {
+export const showNotification = (message, seconds) => {
+  return (dispatch) => {
     dispatch(setNotification(message));
     setTimeout(() => {
       dispatch(clearNotification());
-    }, time);
+    }, seconds * 1000);
   };
 };
 
