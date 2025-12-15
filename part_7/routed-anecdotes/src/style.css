@@ -13,6 +13,15 @@ button {
     padding:5px;
 }
 
+.notifications{
+    background: orange;
+    color:#222;
+    padding:3px;
+    border-radius:2px;
+    width:300px;
+
+
+}
 .footer{
     margin-top:32px;
     background:#333;
