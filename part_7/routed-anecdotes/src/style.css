@@ -1,0 +1,21 @@
+
+*{
+    background:#222;
+    color:#ccc;
+}
+body{
+    padding:16px;
+}
+button {
+    background-color: steelblue;
+
+    color:#222;
+    padding:5px;
+}
+
+.footer{
+    margin-top:32px;
+    background:#333;
+    width:200px;
+    padding:2px;
+}
